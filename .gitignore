@@ -20,6 +20,7 @@ venv/
 *.zip
 *.tsv
 *.jsonl
+*.json
 
 # System files
 .DS_Store
