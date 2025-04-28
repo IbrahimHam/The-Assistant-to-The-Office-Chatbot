@@ -17,3 +17,4 @@ h5py==3.11.0
 matplotlib==3.7.1
 jupyter-black==0.4.0
 torch==2.7.0
+python-dotenv==1.0.1
