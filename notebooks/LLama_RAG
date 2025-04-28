@@ -1,0 +1,145 @@
+# Daniels File, if you want to mess around wiht it feel free. still incomplete.
+
+from dotenv import load_dotenv
+import pandas as pd
+import warnings
+import os
+from flask import Flask, request, jsonify
+from langchain_groq import ChatGroq
+from langchain.prompts.prompt import PromptTemplate
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain import hub
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.chains.retrieval import create_retrieval_chain
+
+load_dotenv()
+warnings.filterwarnings("ignore")
+
+# Initialize memory for context
+chat_memory = {"character": "Pam", "context": []}
+
+def generate_character_output(csv_path, character_name, user_input, chunk_size=800, chunk_overlap=80, db_name="react", vector_db_path="../vector_databases/react_vector_db"):
+    """
+    This function processes a script CSV file, creates embeddings, and retrieves information about a given character.
+    """
+    # Load the script data
+    text_data = pd.read_csv(csv_path)
+
+    # Split the document into chunks
+    def split_documents(documents, chunk_size, chunk_overlap):
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap
+        )
+        return text_splitter.split_documents(documents=documents)
+
+    react_chunks = split_documents(text_data, chunk_size, chunk_overlap)
+
+    # Create embeddings and save to vector database
+    def create_embedding_vector_db(chunks, db_name, target_directory="../vector_databases"):
+        embedding = HuggingFaceEmbeddings(
+            model_name='sentence-transformers/all-mpnet-base-v2'
+        )
+        vectorstore = FAISS.from_documents(
+            documents=chunks,
+            embedding=embedding
+        )
+        if not os.path.exists(target_directory):
+            os.makedirs(target_directory)
+        vectorstore.save_local(f"{target_directory}/{db_name}_vector_db")
+
+    create_embedding_vector_db(chunks=react_chunks, db_name=db_name)
+
+    # Retrieve data from vector database
+    def retrieve_from_vector_db(vector_db_path):
+        embeddings = HuggingFaceEmbeddings(
+            model_name='sentence-transformers/all-mpnet-base-v2'
+        )
+        react_vectorstore = FAISS.load_local(
+            folder_path=vector_db_path,
+            embeddings=embeddings,
+            allow_dangerous_deserialization=True
+        )
+        return react_vectorstore.as_retriever()
+
+    react_retriever = retrieve_from_vector_db(vector_db_path)
+
+    # Connect chains
+    def connect_chains(retriever):
+        stuff_documents_chain = create_stuff_documents_chain(
+            llm=ChatGroq(
+                model="llama3-8b-8192",
+                temperature=0,
+                max_tokens=None,
+                timeout=None,
+                max_retries=2
+            ),
+            prompt=hub.pull("langchain-ai/retrieval-qa-chat")
+        )
+        retrieval_chain = create_retrieval_chain(
+            retriever=retriever,
+            combine_docs_chain=stuff_documents_chain
+        )
+        return retrieval_chain
+
+    react_retrieval_chain = connect_chains(react_retriever)
+
+    # Generate output
+    output = react_retrieval_chain.invoke(
+        {"input": f"{user_input} (Character: {character_name})"}
+    )
+
+    return output['answer']
+
+"""Default Character:
+The chatbot starts with Pam as the default character.
+Users can switch characters by saying something like "Switch to Dwight."
+Memory for Context:
+
+The chatbot maintains a small memory of the last 5 exchanges (user input and bot responses).
+This memory is included in the response for debugging or future enhancements.
+Dynamic Character Switching:
+
+Users can dynamically switch characters during the conversation.
+Real-Time Interaction:
+
+The chatbot runs as a Flask app, allowing real-time interaction via POST requests."""
+
+# # Flask App for Real-Time Chatbot
+# app = Flask(__name__)
+
+# @app.route("/chat", methods=["POST"])
+# def chat():
+#     global chat_memory
+
+#     data = request.json
+#     user_input = data.get("user_input")
+#     character_name = data.get("character_name", chat_memory["character"])  # Default to memory's character
+#     csv_path = "../data/The-Office-With-More-Emotions-and-sarcasm.csv"
+
+#     if not user_input:
+#         return jsonify({"error": "User input is required"}), 400
+
+#     # Update memory if the user wants to switch characters
+#     if "switch to" in user_input.lower():
+#         new_character = user_input.lower().replace("switch to", "").strip().capitalize()
+#         chat_memory["character"] = new_character
+#         return jsonify({"response": f"Switched to {new_character}."})
+
+#     try:
+#         # Generate response
+#         response = generate_character_output(csv_path, character_name, user_input)
+        
+#         # Update memory with the latest context
+#         chat_memory["context"].append({"user": user_input, "bot": response})
+#         if len(chat_memory["context"]) > 5:  # Limit memory to the last 5 exchanges
+#             chat_memory["context"].pop(0)
+
+#         return jsonify({"response": response, "character": character_name, "context": chat_memory["context"]})
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
+
+# if __name__ == "__main__":
+#     app.run(debug=True)
