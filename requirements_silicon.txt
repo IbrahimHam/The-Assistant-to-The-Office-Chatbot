@@ -15,3 +15,4 @@ ipywidgets==8.0.6
 testbook==0.4.2
 h5py==3.11.0
 matplotlib==3.7.1
+torch==2.7.0
