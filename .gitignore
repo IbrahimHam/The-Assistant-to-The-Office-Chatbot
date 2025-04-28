@@ -16,7 +16,7 @@ venv/
 .ipynb_checkpoints
 
 # Data
-*.csv
+The-Office-Lines-V4.csv
 *.zip
 *.tsv
 *.jsonl
