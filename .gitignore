@@ -19,7 +19,7 @@ venv/
 The-Office-Lines-V4.csv
 *.zip
 *.tsv
-*.jsonl
+# *.jsonl
 *.json
 
 # System files
