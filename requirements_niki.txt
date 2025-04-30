@@ -1,0 +1,33 @@
+# Code Formatting
+black==24.3.0  # For code formatting
+
+# Core Dependencies
+jupyterlab==4.2.5
+python-dotenv==1.0.1  # For loading environment variables
+
+# Data Handling
+pandas==2.2.1  # For CSV support
+numpy==1.26.4  # For numerical operations
+
+# LangChain (Core and Community)
+langchain
+langchain-community==0.3.2  # Community extensions for LangChain
+langchainhub==0.1.21  # For accessing models and datasets from LangChain Hub
+
+# Provider-Specific LangChain
+langchain-huggingface==0.1.0  # HuggingFace integration
+langchain-groq==0.2.0  # Groq integration
+
+# Vector Search
+faiss-cpu==1.9.0  # For FAISS vector database
+
+# Optional Visualization and Widgets
+ipywidgets==8.0.6  # For interactive widgets in Jupyter Notebook
+
+# Transformers and NLP
+transformers
+sentencepiece  # For tokenization (used by HuggingFace models)
+torch==2.0.1  # PyTorch for HuggingFace models
+
+# Optional Testing
+testbook==0.4.2  # For testing Jupyter Notebooks
