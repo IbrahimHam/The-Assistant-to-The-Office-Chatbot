@@ -107,8 +107,13 @@ def get_relevant_docs(character: str, query: str, vectorstore):
         list: List of filtered Document objects containing character lines.
     """
     retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
+    print(f"Retrieving documents for query: {query}")
+
     docs = retriever.invoke(query)
+    print(f"Retrieved documents: {len(docs)} docs")
+
     filtered = [doc for doc in docs if character in doc.metadata.get("speakers", [])]
+    print(f"Filtered documents: {len(filtered)} docs")
     for doc in filtered:
         doc.page_content = get_character_lines(doc.page_content, character)
     return filtered
@@ -173,7 +178,11 @@ def call_character_bot(state: ChatState, llm, prompt_template, vectorstore) -> C
     character = state["character"]
     user_name = state["user_name"]
 
-    context = "\n\n".join(doc.page_content for doc in get_relevant_docs(character, query, vectorstore))
+    relevant_docs = get_relevant_docs(character, query, vectorstore)
+
+    context = "\n\n".join(
+        doc.page_content 
+        for doc in relevant_docs)
 
     state["messages"].append(HumanMessage(content=query))
 
@@ -226,6 +235,7 @@ def main():
 
     # Create prompt template
     prompt_template = create_prompt_template()
+    print("Prompt Template:", prompt_template.template)
 
     # Setup LangGraph workflow
     graph = StateGraph(ChatState)
