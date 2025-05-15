@@ -16,6 +16,8 @@ import logging
 import random
 import time
 from typing_extensions import TypedDict, Annotated
+from typing import List
+from textwrap import shorten
 from uuid import uuid4
 from transformers import pipeline
 
@@ -32,11 +34,13 @@ emotion_2_classifier = pipeline(
     max_length=512
 )
 
+
 def get_top_emotions(text, top_k=2):
     """Get top k emotions from the classifier."""
     scores = emotion_2_classifier(text)[0]
     sorted_scores = sorted(scores, key=lambda x: x["score"], reverse=True)
     return [e["label"] for e in sorted_scores[:top_k]]
+
 
 def load_scene_chunks(file_path):
     """Load scene chunks from a JSONL file.
@@ -52,6 +56,7 @@ def load_scene_chunks(file_path):
         for line in f:
             scene_chunks.append(json.loads(line))
     return scene_chunks
+
 
 def create_documents(scene_chunks):
     """Create LangChain Documents from scene chunks.
@@ -75,6 +80,7 @@ def create_documents(scene_chunks):
         )
         documents.append(doc)
     return documents
+
 
 def initialize_vectorstore(documents, embedding_model, vectorstore_path):
     """Initialize or load FAISS vectorstore.
@@ -101,6 +107,7 @@ def initialize_vectorstore(documents, embedding_model, vectorstore_path):
         )
     return vectorstore
 
+
 def get_character_lines(text: str, character: str) -> str:
     """Filter only lines spoken by a given character.
 
@@ -116,8 +123,10 @@ def get_character_lines(text: str, character: str) -> str:
         if line.startswith(f"{character}:")
     ])
 
+
 # Track used scene IDs to reduce redundancy
 used_scene_ids = set()
+
 
 def get_relevant_docs(character: str, query: str, vectorstore):
     """Get relevant scenes for a query where the character appears.
@@ -169,7 +178,7 @@ def get_relevant_docs(character: str, query: str, vectorstore):
     filtered = top_docs[:10] + [doc for doc,
                                 score in prioritized if score == 0][:10-len(top_docs)]
     # print(
-        # f"Prioritized documents for emotions {target_emotions}: {len(filtered)} docs")
+    # f"Prioritized documents for emotions {target_emotions}: {len(filtered)} docs")
 
     for doc in filtered:
         doc.metadata["character_lines"] = get_character_lines(
@@ -177,6 +186,7 @@ def get_relevant_docs(character: str, query: str, vectorstore):
         used_scene_ids.add(doc.metadata["scene_id"])
 
     return filtered
+
 
 def format_emotion_sarcasm_context(docs, character):
     """Format emotional and sarcasm context for the prompt.
@@ -203,6 +213,7 @@ def format_emotion_sarcasm_context(docs, character):
             context.append(f"Scene {scene_id}:\n" + "\n".join(analysis))
     return "\n\n".join(context) if context else "No emotional or sarcasm data available."
 
+
 def create_prompt_template():
     """Create the prompt template for character responses.
 
@@ -210,8 +221,10 @@ def create_prompt_template():
         PromptTemplate: Configured LangChain PromptTemplate object.
     """
     return PromptTemplate(
-        input_variables=["context", "emotion_sarcasm_context",
-                         "question", "character", "user_name", "history"],
+        # input_variables=["context", "emotion_sarcasm_context",
+        #                  "question", "character", "user_name", "history"],
+        input_variables2=["context", "emotions", "question", "character", "user_name", "history"],
+
         template="""
         You are a character from the TV series THE OFFICE (US), having a conversation with {user_name}.
         
@@ -226,36 +239,20 @@ def create_prompt_template():
         - Stanley: gruff, no-nonsense, disengaged, blunt for 'anger'.
         - Toby: quiet, melancholic, conflict-averse, resigned for 'sadness'.
 
-        Use the Emotional and Sarcasm Analysis to shape your response:
-        - For 'joy' or 'support', be warm, positive, enthusiastic.
-        - For 'sadness' or 'fear', be empathetic, cautious, comforting.
-        - For 'sarcastic' lines, use sharp, witty humor (especially for Jim).
-        - For 'not_sarcastic', keep responses direct but in-character.
-        - For 'anger', reflect frustration or intensity.
-        - For 'love', add warmth or affection.
+        Use the emotional tone below to guide your response:
+        ------------------------
+        Detected emotions from the user: {emotions}
 
         Use the chat history to:
-        - Maintain focus on the most recent topic or entity discussed (e.g., a specific person like Toby).
-        - Avoid repeating ideas, suggestions, or phrases (e.g., don't mention donuts if already suggested).
-        - Build on the user's prior messages, addressing new details or emotions they express.
-        - Respond to the user's emotional tone (e.g., frustration, curiosity) with appropriate empathy or deflection.
+        - Maintain continuity with the last topic.
+        - Avoid repeating ideas or phrases.
+        - Respond to user’s emotional tone appropriately.
         - If the user continues the same topic, offer fresh perspectives, solutions, or anecdotes.        
 
-        - Include references to Dunder Mifflin events (e.g., Dundies, Pretzel Day, Schrute Farms) or Michael’s personal anecdotes (e.g., his childhood, Jan, Holly) when relevant.
-        - Use Michael’s signature humor: tangents, misquotes, or absurd analogies (e.g., “I’m like Gandhi, but with better hair”).
-        - Use Jim's signature humor: deadpan delivery, playful sarcasm, and subtle pranks (e.g., “I’m not superstitious, but I am a little stitious”).
-        - Use Pam's signature humor: light-hearted teasing, playful banter, and a touch of sarcasm (e.g., “I’m not saying I’m Batman, but have you ever seen us in the same room together?”).
-        - Use Dwight's signature humor: intense loyalty, absurd confidence, and a touch of absurdity (e.g., “I am faster than 80% of all snakes”).
-        - Use Angela's signature humor: dry wit, judgmental tone, and a touch of sarcasm (e.g., “I’m not a bad person. I’m just drawn that way.”).
-        - Use Creed's signature humor: bizarre anecdotes, oddball behavior, and a touch of absurdity (e.g., “I am running away from my responsibilities. And it feels good.”).
-        - Use Kevin's signature humor: childlike innocence, food obsession, and a touch of clumsiness (e.g., “I just want to lie on the beach and think happy thoughts.”).
-        - Use Oscar's signature humor: dry wit, intellectual sarcasm, and a touch of frustration (e.g., “I’m not saying I’m better than you. I’m just saying I’m not you.”).
-        - Use Stanley's signature humor: gruff demeanor, no-nonsense attitude, and a touch of sarcasm (e.g., “I don’t need this job. I don’t need this job. I don’t need this job.”).
-        - Use Toby's signature humor: dry wit, self-deprecation, and a touch of melancholy (e.g., “I’m not superstitious, but I am a little stitious.”).
-        - Use sarcasm only when the context calls for it, and avoid it when the character is being sincere or serious.
-        
-        Respond naturally, avoiding repetitive phrases (e.g., *sigh*, *smile*, *laugh*). Use action tags sparingly.
-        Make responses personal, reactive, and grounded in the show’s context.
+        Include references to Dunder Mifflin, inside jokes, and events from the show where relevant.
+        Do not break character or respond beyond what your character would know.
+
+        Respond naturally, avoiding repetitive phrases (e.g., *sigh*, *smile*, *laugh*). Use action tags sparingly. Limit your response to maximum 6–7 lines.
         Don’t break character or answer beyond your character’s knowledge.
 
         Previous Chat:
@@ -266,19 +263,30 @@ def create_prompt_template():
         ------------------------
         {context}
 
-        Emotional and Sarcasm Analysis:
-        ------------------------
-        {emotion_sarcasm_context}
-
         User: {question}
         Character ({character}):"""
     )
+
+        # - Include references to Dunder Mifflin events (e.g., Dundies, Pretzel Day, Schrute Farms) or Michael’s personal anecdotes (e.g., his childhood, Jan, Holly) when relevant.
+        # - Use Michael’s signature humor: tangents, misquotes, or absurd analogies (e.g., “I’m like Gandhi, but with better hair”).
+        # - Use Jim's signature humor: deadpan delivery, playful sarcasm, and subtle pranks (e.g., “I’m not superstitious, but I am a little stitious”).
+        # - Use Pam's signature humor: light-hearted teasing, playful banter, and a touch of sarcasm (e.g., “I’m not saying I’m Batman, but have you ever seen us in the same room together?”).
+        # - Use Dwight's signature humor: intense loyalty, absurd confidence, and a touch of absurdity (e.g., “I am faster than 80% of all snakes”).
+        # - Use Angela's signature humor: dry wit, judgmental tone, and a touch of sarcasm (e.g., “I’m not a bad person. I’m just drawn that way.”).
+        # - Use Creed's signature humor: bizarre anecdotes, oddball behavior, and a touch of absurdity (e.g., “I am running away from my responsibilities. And it feels good.”).
+        # - Use Kevin's signature humor: childlike innocence, food obsession, and a touch of clumsiness (e.g., “I just want to lie on the beach and think happy thoughts.”).
+        # - Use Oscar's signature humor: dry wit, intellectual sarcasm, and a touch of frustration (e.g., “I’m not saying I’m better than you. I’m just saying I’m not you.”).
+        # - Use Stanley's signature humor: gruff demeanor, no-nonsense attitude, and a touch of sarcasm (e.g., “I don’t need this job. I don’t need this job. I don’t need this job.”).
+        # - Use Toby's signature humor: dry wit, self-deprecation, and a touch of melancholy (e.g., “I’m not superstitious, but I am a little stitious.”).
+        # - Use sarcasm only when the context calls for it, and avoid it when the character is being sincere or serious.
+
 
 class ChatState(TypedDict):
     messages: Annotated[list, add_messages]
     character: str
     query: str
     user_name: str
+
 
 def call_character_bot(state: ChatState, llm, prompt_template, vectorstore) -> ChatState:
     """LangGraph node function to process character response.
@@ -297,15 +305,20 @@ def call_character_bot(state: ChatState, llm, prompt_template, vectorstore) -> C
     user_name = state["user_name"]
 
     relevant_docs = get_relevant_docs(character, query, vectorstore)
-    context = "\n\n".join(doc.metadata["character_lines"]
-                          for doc in relevant_docs if doc.metadata["character_lines"])
-    emotion_sarcasm_context = format_emotion_sarcasm_context(
-        relevant_docs, character)
+    context = "\n\n".join(
+        doc.metadata["character_lines"]
+        for doc in relevant_docs if doc.metadata.get("character_lines")
+    ) or "No relevant scenes available."
+    
+    emotions = get_top_emotions(query, top_k=2)
+
+    # emotion_sarcasm_context = format_emotion_sarcasm_context(
+    #     relevant_docs, character)
     # print("Emotion/Sarcasm Context:", emotion_sarcasm_context)
 
     state["messages"].append(HumanMessage(content=query))
 
-    recent = state["messages"][-8:]
+    recent = state["messages"][-6:]
     chat_history = ""
     for msg in recent:
         speaker = user_name if msg.type == "human" else character
@@ -313,7 +326,8 @@ def call_character_bot(state: ChatState, llm, prompt_template, vectorstore) -> C
 
     full_prompt = prompt_template.format(
         context=context,
-        emotion_sarcasm_context=emotion_sarcasm_context,
+        # emotion_sarcasm_context=emotion_sarcasm_context,
+        emotions=emotions,
         question=query,
         character=character,
         user_name=user_name,
@@ -323,6 +337,7 @@ def call_character_bot(state: ChatState, llm, prompt_template, vectorstore) -> C
     response = llm.invoke([HumanMessage(content=full_prompt)])
     state["messages"].append(response)
     return {"messages": state["messages"]}
+
 
 def main():
     """Main function to run the Office Character Chatbot."""
@@ -370,7 +385,8 @@ def main():
     character = "Pam"
     thread_id = f"{character.lower()}-chat-thread"
     chat_memory = {}
-    VALID_CHARACTERS = {"Pam", "Jim", "Dwight", "Michael", "Angela", "Creed", "Kevin", "Oscar", "Stanley", "Toby"}
+    VALID_CHARACTERS = {"Pam", "Jim", "Dwight", "Michael",
+                        "Angela", "Creed", "Kevin", "Oscar", "Stanley", "Toby"}
     RESPONSE_DELAY_SECONDS = 2.0  # Delay before printing response
 
     print("="*80)
@@ -418,7 +434,8 @@ def main():
                 used_scene_ids.clear()  # Reset used scenes for new character
                 print(f"\n✅ You're now chatting with {character}!")
             else:
-                print(f"\n❌ Invalid character. Please choose from: {', '.join(VALID_CHARACTERS)}")
+                print(
+                    f"\n❌ Invalid character. Please choose from: {', '.join(VALID_CHARACTERS)}")
             continue
 
         try:
@@ -438,6 +455,74 @@ def main():
             sys.stdout.flush()
         except Exception as e:
             print(f"⚠️ Error: {e}")
+
+def run_chat(user_name: str, character: str, query: str, memory: List, workflow,
+             llm, prompt_template, vectorstore):
+    """Run a character chat turn using shared components, emotion-based prompt, and clean output."""
+
+    # Reconstruct chat history from memory
+    messages = []
+    for m in memory:
+        if m.type == "human":
+            messages.append(HumanMessage(content=m.content))
+        else:
+            messages.append(SystemMessage(content=m.content))
+
+    # Limit to recent memory only
+    recent = messages[-6:]
+    chat_history = ""
+    for msg in recent:
+        speaker = user_name if isinstance(msg, HumanMessage) else character
+        content = msg.content[:300] if speaker != user_name else msg.content
+        chat_history += f"{speaker}: {content}\n"
+
+    # Retrieve relevant scenes
+    relevant_docs = get_relevant_docs(character, query, vectorstore)
+    if not relevant_docs:
+        print(f"⚠️ No relevant docs found for {character}")
+    context = "\n\n".join(
+        doc.metadata["character_lines"]
+        for doc in relevant_docs if doc.metadata.get("character_lines")
+    ) or "No relevant scenes available."
+
+    # Detect emotions
+    emotions = get_top_emotions(query, top_k=2)
+
+    # Format the prompt
+    full_prompt = prompt_template.format(
+        context=context,
+        emotions=emotions,
+        question=query,
+        character=character,
+        user_name=user_name,
+        history=chat_history
+    )
+
+    # Debug logs
+    print("=" * 100)
+    print("🧠 RUN_CHAT DEBUG")
+    print(f"👤 User: {user_name}")
+    print(f"🎭 Character: {character}")
+    print(f"💬 Query: {query}")
+    print(f"🎭 Emotions: {emotions}")
+    print(f"📄 Retrieved Scene IDs: {[doc.metadata['scene_id'] for doc in relevant_docs]}")
+    # print(f"🧾 Full Prompt (Preview):\n{shorten(full_prompt, width=1500, placeholder='...')}")
+    print(f"🧾 Full Prompt:\n{full_prompt}")
+    print("=" * 100)
+
+    # Call LangGraph workflow
+    result = workflow.invoke(
+        {
+            "query": query,
+            "character": character,
+            "user_name": user_name,
+            "messages": messages
+        },
+        config={"configurable": {"thread_id": f"{character.lower()}-web-thread"}}
+    )
+
+    return {"response": result["messages"][-1].content}
+
 
 
 if __name__ == "__main__":
