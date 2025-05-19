@@ -20,7 +20,7 @@ The-Office-Lines-V4.csv
 *.zip
 *.tsv
 # *.jsonl
-*.json
+./*.json
 
 # System files
 .DS_Store
