@@ -92,19 +92,24 @@ const Chat = () => {
       </div>
       
       {/* Character roster */}
-      <div className={`bg-chilis bg-opacity-90 p-4 transition-all duration-300 overflow-hidden ${showRoster ? 'max-h-96' : 'max-h-0'}`}>
-        <h2 className="font-pixel text-white text-xl mb-4">Choose Your Character:</h2>
-        <div className="flex flex-wrap gap-4 justify-center">
-          {characters.map(character => (
-            <CharacterSprite 
-              key={character} 
-              character={character}
-              isActive={character === currentCharacter}
-              onClick={() => handleCharacterSelect(character)}
-            />
-          ))}
-        </div>
-      </div>
+      <div className={`bg-chilis bg-opacity-90 transition-all duration-300 overflow-hidden ${showRoster ? 'max-h-96 p-4' : 'max-h-0 p-0'}`}>
+      {showRoster && (
+        <>
+          <h2 className="font-pixel text-white text-xl mb-4">Choose Your Character:</h2>
+          <div className="flex flex-wrap gap-4 justify-center">
+            {characters.map(character => (
+              <CharacterSprite 
+                key={character} 
+                character={character}
+                isActive={character === currentCharacter}
+                onClick={() => handleCharacterSelect(character)}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+
       
       {/* Dundies points counter */}
       <div className="bg-pretzel p-2 text-right">
