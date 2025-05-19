@@ -1,43 +1,60 @@
-# The Assistant to The Office Chatbot
+# 🧠 The Assistant to The Office Chatbot
 
-Welcome to **The Assistant to The Office Chatbot**, a creative AI project that brings fictional characters to life through dynamic, in-character conversations. Built around *The Office (US)*, this chatbot allows users to chat with TV show characters like Michael Scott or Dwight Schrute and watch how their responses evolve across different seasons.
+Ever wished you could chat with characters from _The Office (US)_?
 
-This project is designed as a full-stack AI product using Natural Language Processing (NLP), character modeling, and optionally custom-trained language models. The goal is to allow freeform conversation with a character, not just retrieving old quotes — but actually generating new dialogue in their personality and context.
+This AI-powered chatbot lets you talk to Pam, Jim, Dwight, Michael, and others — all while staying emotionally aware, context-driven, and hilariously in-character.
+
+Built with ❤️ using LangChain, LangGraph, FAISS, HuggingFace Transformers, and powered by Groq’s blazing-fast LLaMA 3 model.
+
+![Python](https://img.shields.io/badge/python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-ready-teal)
+![LangChain](https://img.shields.io/badge/langchain-v0.2+-orange)
 
 ---
 
 ## 🚀 Main Features
+
 - Choose a character (e.g., Michael Scott)
-- Select their development stage (e.g., Season 1–3, Season 4–6)
-- Chat with them using natural language
-- Receive context-aware replies that reflect their tone, language, and knowledge from that era
+- Emotion + sarcasm-aware responses using NLP models
+- Contextual memory across chat turns
+- Runs in both **console mode** and as a **FastAPI backend**
+- Real dialogue pulled from the show and embedded for retrieval
 
 ---
 
-## 🧠 Tech Stack (To Be Expanded)
-- Python (NLP, data prep, modeling)
-- Hugging Face Transformers (model training & inference)
-- FAISS / ChromaDB (for semantic search — optional)
-- Streamlit or Gradio (UI layer)
-- JupyterLab (for EDA, modeling, fine-tuning)
+## 🧠 Tech Stack
+
+- **LLM**: Groq (LLaMA 3)
+- **Embeddings**: SentenceTransformers (MiniLM)
+- **Retrieval**: FAISS
+- **Framework**: LangChain + LangGraph
+- **NLP**: HuggingFace Transformers
+- **Backend**: FastAPI
+- **Frontend**: Lovable (React)
+- **Notebooks**: Jupyter + pandas + PyTorch
 
 ---
 
-## 📦 Project Structure (Coming Soon)
+## 🗂️ Project Structure
+
 ```
-📁 data/                # Dialogue dataset
-📁 notebooks/           # EDA, preprocessing, fine-tuning
-📁 app/                 # Web app UI & inference code
-📄 requirements.txt     # Required Python libraries
-📄 README.md            # Project overview
+The-Assistant-to-The-Office-Chatbot/
+├── backend/
+│   ├── api/                     # FastAPI server
+│   └── chatbot/                 # Modular chatbot logic
+├── data/                        # CSVs, chunks, vectorstore
+├── notebooks/                  # Data processing, feature engineering
+├── scripts/archive/            # Archived prototypes + experiments
+├── requirements.txt            # Final dependency list
+└── README.md                   # You're here!
 ```
 
 ---
 
-## 🧰 Set up your Environment
-The added [requirements file](requirements.txt) contains all libraries and dependencies we need to execute Pandas and Numpy.
+## 🧰 Set Up Your Environment
 
-### **macOS** – run the following:
+### macOS/Linux
+
 ```bash
 pyenv local 3.11.3
 python -m venv .venv
@@ -46,9 +63,8 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### **WindowsOS** – run the following:
+### Windows (PowerShell)
 
-**For PowerShell CLI:**
 ```powershell
 pyenv local 3.11.3
 python -m venv .venv
@@ -57,7 +73,8 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-**For Git-Bash CLI:**
+### Windows (Git-Bash)
+
 ```bash
 pyenv local 3.11.3
 python -m venv .venv
@@ -66,27 +83,37 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-**Note:** If you encounter an error with pip upgrade:
+---
+
+## 💻 How to Run It
+
+### 1. Console Chatbot
+
 ```bash
-python.exe -m pip install --upgrade pip
+python -m backend.chatbot.console
 ```
+
+Starts a conversation with Pam. Use `/switch <Character>` to change.
+
+### 2. Web API
+
+```bash
+uvicorn backend.api.main:app --reload
+```
+
+Visit `http://localhost:8000/docs` for interactive API testing.
 
 ---
 
-## ✅ Current Dependencies
-To get started, install the dependencies listed below. These libraries cover data handling, visualization, machine learning, and the core NLP functionality we'll use to build the chatbot.
+## 📝 Notebooks
 
-```
-jupyterlab==3.6.3
-seaborn==0.12.2
-numpy==1.24.3
-pandas==2.0.1
-scikit-learn==1.2.2
-transformers==4.40.0
-datasets==2.18.0
-sentence-transformers==2.2.2
-streamlit==1.32.0
-```
+- `1_data_preparation_and_feature_engineering.ipynb`: handles speaker cleaning, emotion/sarcasm tagging, and chunking into JSONL
 
-These will be updated as the project evolves and new tools are integrated.
+Other archived notebooks and prototypes live in `scripts/archive/`.
 
+---
+
+## 🎉 Thanks
+
+> "You miss 100% of the shots you don’t take. – Wayne Gretzky"  
+> – Michael Scott
