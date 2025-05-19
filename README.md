@@ -40,9 +40,10 @@ Built with ❤️ using LangChain, LangGraph, FAISS, HuggingFace Transformers, a
 ```
 The-Assistant-to-The-Office-Chatbot/
 ├── backend/
-│   ├── api/                     # FastAPI server
-│   └── chatbot/                 # Modular chatbot logic
-├── data/                        # CSVs, chunks, vectorstore
+│   ├── api/                    # FastAPI server
+│   └── chatbot/                # Modular chatbot logic
+├── frontend/                   # Lovable-generated React app
+├── data/                       # CSVs, chunks, vectorstore
 ├── notebooks/                  # Data processing, feature engineering
 ├── scripts/archive/            # Archived prototypes + experiments
 ├── requirements.txt            # Final dependency list
@@ -102,6 +103,16 @@ uvicorn backend.api.main:app --reload
 ```
 
 Visit `http://localhost:8000/docs` for interactive API testing.
+
+### 3. Frontend App
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Visit `http://localhost:8080` to chat with characters, earn Dundies Points, and discover Easter eggs!
 
 ---
 
