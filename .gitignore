@@ -31,3 +31,18 @@ Thumbs.db
 
 # VS Code
 .vscode/
+
+# === Frontend / Vite React (Lovable) ===
+/frontend/node_modules/
+/frontend/dist/
+/frontend/dist-ssr/
+/frontend/*.log
+/frontend/*.local
+/frontend/.DS_Store
+/frontend/.vscode/
+/frontend/.idea
+/frontend/*.suo
+/frontend/*.ntvs*
+/frontend/*.njsproj
+/frontend/*.sln
+/frontend/*.sw?

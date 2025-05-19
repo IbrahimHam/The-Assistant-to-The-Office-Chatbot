@@ -1,0 +1,92 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
+
+@layer base {
+  :root {
+    --background: 39 70% 95%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  body {
+    @apply bg-officeBackground font-pixel bg-paper-texture;
+    image-rendering: pixelated;
+  }
+
+  * {
+    @apply border-border;
+  }
+}
+
+@layer components {
+  .pixel-border {
+    @apply border-4 border-black relative;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.9);
+  }
+  
+  .pixel-button {
+    @apply pixel-border bg-dundies text-black font-pixel uppercase tracking-wider py-2 px-6 transition-all duration-100 hover:translate-y-1 hover:shadow-none active:translate-y-2;
+    image-rendering: pixelated;
+  }
+
+  .pixel-input {
+    @apply pixel-border bg-white text-black font-pixel py-2 px-4;
+    image-rendering: pixelated;
+  }
+
+  .character-sprite {
+    @apply w-16 h-16 cursor-pointer transition-all duration-200 hover:scale-110;
+    image-rendering: pixelated;
+  }
+  
+  .achievement {
+    @apply fixed bottom-4 right-4 bg-dundies text-black p-4 pixel-border z-50 animate-achievement-pop;
+    image-rendering: pixelated;
+  }
+  
+  .typing-indicator::after {
+    @apply content-['.'] animate-typing;
+  }
+  
+  .pixel-shine {
+    @apply relative overflow-hidden;
+  }
+  
+  .pixel-shine::before {
+    content: '';
+    @apply absolute top-0 left-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-45 animate-pixel-shine;
+  }
+}
