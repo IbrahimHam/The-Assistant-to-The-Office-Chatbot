@@ -31,9 +31,9 @@ const About = () => {
             {/* Memo header */}
             <div className="border-b-4 border-black pb-4 mb-4">
               <img 
-                src="https://i.ibb.co/g7Rncnz/dunder-mifflin-logo.png" 
+                src="https://i.postimg.cc/TwtRCFgC/mug.png" 
                 alt="Dunder Mifflin" 
-                className="h-16 mx-auto mb-2" 
+                className="h-20 mx-auto mb-2" 
               />
               <h1 className="font-pixel text-3xl text-dundies">Dunder Mifflin Memo</h1>
               <p className="font-pixel text-sm text-black">ATTENTION: All Branches</p>
@@ -63,21 +63,18 @@ const About = () => {
                 {[
                   {
                     name: "Ibrahim Hammoud", 
-                    role: "NLP Specialist", 
-                    image: "https://i.ibb.co/YQKWTkC/michael.png",
-                    link: "https://linkedin.com/in/johndoe"
+                    image: "https://i.postimg.cc/ThqNcMWP/ibrahim.png",
+                    link: "https://www.linkedin.com/in/ibrahim-hammoud/"
                   },
                   {
                     name: "Nikita Buss", 
-                    role: "Character AI Developer", 
-                    image: "https://i.ibb.co/ZH1tygH/pam.png",
-                    link: "https://linkedin.com/in/janesmith"
+                    image: "https://i.postimg.cc/BXSYYYxB/nikita.png",
+                    link: "https://www.linkedin.com/in/nikita-buss/"
                   },
                   {
-                    name: "Daniel G", 
-                    role: "Dialogue Systems Engineer", 
-                    image: "https://i.ibb.co/cY25vBN/jim.png",
-                    link: "https://linkedin.com/in/alexlee"
+                    name: "Daniel Gill", 
+                    image: "https://i.postimg.cc/K4ysLvjV/daniel.png",
+                    link: "https://www.linkedin.com/in/dgillphihdelta/"
                   }
                 ].map((teammate, index) => (
                   <div key={index} className="text-center">
@@ -89,7 +86,6 @@ const About = () => {
                       />
                     </div>
                     <h3 className="font-pixel text-xl text-schrute">{teammate.name}</h3>
-                    <p className="font-pixel text-sm text-black">{teammate.role}</p>
                     <a 
                       href={teammate.link} 
                       target="_blank" 
@@ -133,7 +129,7 @@ const About = () => {
             {/* Stapler in Jello easter egg */}
             <div className="absolute -bottom-6 -right-6 w-16 h-16">
               <img 
-                src="https://i.ibb.co/k0jYrGS/stapler-jello.png" 
+                src="https://i.postimg.cc/06pqCKCM/micheal.png" 
                 alt="Stapler in Jello" 
                 className="w-full h-full object-contain"
               />

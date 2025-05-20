@@ -77,11 +77,7 @@ const Chat = () => {
       <div className="bg-dundies p-4 pixel-border fixed top-0 left-0 w-full z-50">
         <div className="flex justify-between items-center">
           <Link to="/" className="font-pixel text-black text-xl flex items-center">
-            <img
-              src="https://i.ibb.co/w7QW1yk/worlds-best-boss-mug.png"
-              alt="The Office Chatbot"
-              className="w-8 h-8 mr-2"
-            />
+
             <span className="hidden sm:inline">Assistant to The Office Chatbot</span>
             <span className="sm:hidden">The Office</span>
           </Link>
@@ -162,28 +158,28 @@ const Chat = () => {
       <div className="bg-pretzel p-4 pixel-border">
         <div className="max-w-3xl mx-auto flex items-center">
           <div className="hidden sm:block mr-3">
-            <div className="w-12 h-12 pixel-border overflow-hidden bg-black">
+            <div className="w-12 h-12 pixel-border overflow-hidden ">
               <img
-                src={`https://i.ibb.co/${
+                src={`https://i.postimg.cc/${
                   currentCharacter === 'Michael'
-                    ? 'YQKWTkC/michael'
+                    ? '06pqCKCM/micheal'
                     : currentCharacter === 'Jim'
-                    ? 'cY25vBN/jim'
+                    ? 'hJFBx1VR/Jim'
                     : currentCharacter === 'Pam'
-                    ? 'ZH1tygH/pam'
+                    ? 'gL0qG5cV/pam'
                     : currentCharacter === 'Dwight'
-                    ? 'kS5Z72v/dwight'
+                    ? 'CB7sTY0M/dwight'
                     : currentCharacter === 'Angela'
-                    ? 'VSxFvf6/angela'
+                    ? 'd1vZZbj1/angela'
                     : currentCharacter === 'Oscar'
-                    ? 'NpDjyC1/oscar'
+                    ? 'njpGPr6w/oscar'
                     : currentCharacter === 'Kevin'
-                    ? 'PGM9QnW/kevin'
+                    ? 'nVGY2kXg/kevin'
                     : currentCharacter === 'Stanley'
-                    ? 'G5T4H3W/stanley'
+                    ? 'QVNqgBgF/stanley'
                     : currentCharacter === 'Creed'
-                    ? 'DbKH3vY/creed'
-                    : 'dkKL9Vf/toby'
+                    ? 'SX0rcDV4/creed'
+                    : 'w3WQw6F0/toby'
                 }.png`}
                 alt={currentCharacter}
                 className="w-full h-full object-cover"

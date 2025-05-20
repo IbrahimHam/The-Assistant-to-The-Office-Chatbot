@@ -12,16 +12,16 @@ const CharacterSprite = ({ character, isActive, onClick }: CharacterSpriteProps)
   const getCharacterImage = (character: Character): string => {
     // Pixel art character placeholders
     const characterImages: Record<Character, string> = {
-      Michael: "https://i.ibb.co/YQKWTkC/michael.png",
-      Jim: "https://i.ibb.co/cY25vBN/jim.png",
-      Pam: "https://i.ibb.co/ZH1tygH/pam.png",
-      Dwight: "https://i.ibb.co/kS5Z72v/dwight.png",
-      Angela: "https://i.ibb.co/VSxFvf6/angela.png",
-      Oscar: "https://i.ibb.co/NpDjyC1/oscar.png",
-      Kevin: "https://i.ibb.co/PGM9QnW/kevin.png",
-      Stanley: "https://i.ibb.co/G5T4H3W/stanley.png",
-      Creed: "https://i.ibb.co/DbKH3vY/creed.png",
-      Toby: "https://i.ibb.co/dkKL9Vf/toby.png"
+      Michael: "https://i.postimg.cc/06pqCKCM/micheal.png",
+      Jim: "https://i.postimg.cc/hJFBx1VR/Jim.png",
+      Pam: "https://i.postimg.cc/gL0qG5cV/pam.png",
+      Dwight: "https://i.postimg.cc/CB7sTY0M/dwight.png",
+      Angela: "https://i.postimg.cc/d1vZZbj1/angela.png",
+      Oscar: "https://i.postimg.cc/njpGPr6w/oscar.png",
+      Kevin: "https://i.postimg.cc/nVGY2kXg/kevin.png",
+      Stanley: "https://i.postimg.cc/QVNqgBgF/stanley.png",
+      Creed: "https://i.postimg.cc/SX0rcDV4/creed.png",
+      Toby: "https://i.postimg.cc/w3WQw6F0/toby.png"
     };
     
     return characterImages[character];
