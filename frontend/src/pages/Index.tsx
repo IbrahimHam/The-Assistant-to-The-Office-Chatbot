@@ -32,9 +32,9 @@ const Index = () => {
       {/* Main content */}
       <div className={`z-10 text-center transition-transform duration-500 ${loaded ? 'translate-y-0' : 'translate-y-16'}`}>
         {/* World's Best Boss mug decoration */}
-        <div className="w-28 h-28 mx-auto mb-4 relative">
+        <div className="w-[300px] h-[300px] mx-auto mb-4 relative">
           <img 
-            src="https://i.ibb.co/w7QW1yk/worlds-best-boss-mug.png" 
+            src="https://i.redd.it/oyq2msf7tp931.png" 
             alt="World's Best Boss Mug" 
             className="w-full h-full object-contain"
           />
@@ -81,24 +81,6 @@ const Index = () => {
         {/* Character preview */}
         <div className="mt-8">
           <p className="font-pixel text-xl animate-blink text-black">Press Start to Chat with The Office!</p>
-          
-          <div className="flex flex-wrap justify-center gap-3 mt-4">
-            {["Michael", "Jim", "Pam", "Dwight", "Angela"].map((char) => (
-              <div key={char} className="w-12 h-12 pixel-border overflow-hidden">
-                <img 
-                  src={`https://i.ibb.co/${
-                    char === "Michael" ? "YQKWTkC/michael" :
-                    char === "Jim" ? "cY25vBN/jim" :
-                    char === "Pam" ? "ZH1tygH/pam" :
-                    char === "Dwight" ? "kS5Z72v/dwight" :
-                    "VSxFvf6/angela"
-                  }.png`} 
-                  alt={char} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
         </div>
       </div>
       
