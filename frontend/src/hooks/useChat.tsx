@@ -152,9 +152,12 @@ const useChat = ({ character = "Pam" }: UseChatProps = {}) => {
     
     setLoading(true);
     
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8000";
+    
     try {
       console.log(userName, currentCharacter, content, messages);
-      const response = await fetch("http://localhost:8000/chat", {
+      console.log(`${BACKEND_URL}/chat`);
+      const response = await fetch(`${BACKEND_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
