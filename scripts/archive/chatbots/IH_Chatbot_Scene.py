@@ -226,7 +226,7 @@ def main():
 
     # Initialize LLM
     llm = ChatGroq(
-        model="llama3-8b-8192",
+        model="llama-3.1-8b-instant",
         temperature=0.6,
         max_tokens=None,
         timeout=None,

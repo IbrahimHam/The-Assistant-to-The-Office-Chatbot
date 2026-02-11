@@ -37,7 +37,7 @@ documents = create_documents(scene_chunks)
 embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 vectorstore = initialize_vectorstore(documents, embedding_model, "data/vector_databases/scene_db_with_emotions")
 
-llm = ChatGroq(model="llama3-8b-8192", temperature=0.6)
+llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.6)
 prompt_template = create_prompt_template()
 
 # Setup LangGraph workflow
