@@ -52,6 +52,32 @@ The-Assistant-to-The-Office-Chatbot/
 
 ---
 
+## 🔑 Environment Variables
+
+Before running anything, copy the example env file and fill in your own values:
+
+```
+cp .env.example .env
+```
+
+Your `.env` should look like this:
+
+```dotenv
+GROQ_API_KEY=your_groq_api_key_here
+CHAT_MODEL=llama-3.1-8b-instant
+EMOTION_ANALYSIS_MODEL=bhadresh-savani/bert-base-uncased-emotion
+```
+
+| Variable                  | Description                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------- |
+| `GROQ_API_KEY`            | Your personal API key from [console.groq.com/keys](https://console.groq.com/keys). Never commit this to git. |
+| `CHAT_MODEL`              | The Groq model used for character responses. Groq periodically deprecates models — check [console.groq.com/docs/deprecations](https://console.groq.com/docs/deprecations) if you start seeing a `model_decommissioned` error. |
+| `EMOTION_ANALYSIS_MODEL`  | HuggingFace model used to detect emotion in user messages. |
+
+> ⚠️ Make sure `.env` is listed in `.gitignore` so your API key is never pushed to GitHub. If a key is ever accidentally committed or shared, revoke it immediately at console.groq.com and generate a new one.
+
+---
+
 ## 🧰 Set Up Your Environment
 
 ### macOS/Linux

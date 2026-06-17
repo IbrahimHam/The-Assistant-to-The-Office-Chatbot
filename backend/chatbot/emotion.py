@@ -10,7 +10,7 @@ logging.getLogger('tensorflow').setLevel(logging.ERROR)
 # Initialize emotion classifier once
 emotion_2_classifier = pipeline(
     "text-classification",
-    model="bhadresh-savani/bert-base-uncased-emotion",
+    model=os.getenv("EMOTION_ANALYSIS_MODEL"),
     top_k=None,
     truncation=True,
     max_length=512

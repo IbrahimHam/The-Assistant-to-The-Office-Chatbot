@@ -33,7 +33,7 @@ def main():
         documents, embedding_model, vectorstore_path)
 
     # LLM + prompt
-    llm = ChatGroq(model="llama3-8b-8192", temperature=0.6)
+    llm = ChatGroq(model=os.getenv("CHAT_MODEL"), temperature=0.6)
     prompt_template = create_prompt_template()
 
     # LangGraph workflow
