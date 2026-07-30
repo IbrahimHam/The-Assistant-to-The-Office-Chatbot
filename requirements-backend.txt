@@ -1,0 +1,18 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+python-dotenv==1.0.1
+pydantic==2.9.2
+
+langchain-groq==0.2.0
+langchain-community==0.3.2
+langchain-huggingface==0.1.0
+langgraph==0.4.2
+faiss-cpu==1.9.0
+
+sentence-transformers==4.0
+transformers==4.51.3
+
+# CPU-only torch build — installed separately in the Dockerfile via
+# --index-url https://download.pytorch.org/whl/cpu to avoid pulling
+# the ~2GB CUDA build that isn't needed on a CPU host.
+torch==2.7.0
